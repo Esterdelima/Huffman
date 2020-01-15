@@ -15,7 +15,7 @@ Email:
 
 - elpa@ic.ufal.br
 
-- mcao@ic.ufal.br
+- mcao@ic.ufal.br (Maria Cristina Alves de Oliveira)
 
 - acng@ic.ufal.br (Ana Carolina Nesso Guedes)
 
