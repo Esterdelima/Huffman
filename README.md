@@ -19,6 +19,7 @@ Email:
 - acng@ic.ufal.br
 
 Links importantes:
+
 Git do projeto: https://github.com/users/Esterdelima/projects/1
 Git de Yago: https://github.com/gideaopinheirobr/huffman.git
 Git de Guiga: https://github.com/gvma/huffman_algorithm/tree/master/huffman
