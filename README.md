@@ -13,7 +13,7 @@ Email:
 
 - eaaa@ic.ufal.br
 
-- elpa@ic.ufal.br
+- elpa@ic.ufal.br (Ester de Lima Pontes Andrade)
 
 - mcao@ic.ufal.br (Maria Cristina Alves de Oliveira)
 
