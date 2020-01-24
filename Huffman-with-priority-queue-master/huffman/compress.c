@@ -102,7 +102,7 @@ void create_freq_array(lli *frequence)
     }
 }
 
-void fill_freq_array(lli *frequence, FILE* file)
+void fill_freq_array(lli *frequence, FILE *file)
 {
     uchar caracter;
 
@@ -123,6 +123,7 @@ NODE *create_huff_tree(PRIORITY_QUEUE *queue)
         NODE *right_node = dequeue(queue);
 
         lli sum = left_node->priority + right_node->priority;
+
         NODE *tree_node = create_node(sum, '*', left_node, right_node);
 
         enqueue(tree_node, queue);
@@ -154,17 +155,19 @@ void print_pre_order(NODE *bt, FILE *compressed)
 {
     if (bt != NULL)
     {
-        if (bt->left == NULL && bt->right == NULL && bt->caracter == '*')
+        if (bt->left == NULL && bt->right == NULL && (bt->caracter == '*' || bt->caracter == '\\'))
         {
             char string[3];
             string[0] = '\\';
-            string[1] = '*';
+            string[1] = bt->caracter;
             string[2] = '\0';
             fprintf(compressed, string);
         }
-        else fputc(bt->caracter, compressed); 
-        print_pre_order(bt->left, compressed);
-        print_pre_order(bt->right, compressed);
+
+        else
+            fputc(bt->caracter, compressed);
+            print_pre_order(bt->left, compressed);
+            print_pre_order(bt->right, compressed);
     }
 }
 
@@ -213,7 +216,7 @@ void new_codification(HASH *hash, NODE *tree, int size, ushort byte)
     if (tree->left == NULL && tree->right == NULL)
     { // cheguei numa folha.
 
-        int index = tree->caracter;// pego a representação inteira do caracter(posicao na hash).
+        int index = tree->caracter;                            // pego a representação inteira do caracter(posicao na hash).
         ELEMENT *element = (ELEMENT *)malloc(sizeof(ELEMENT)); // no vazio.
 
         element->size = size;
@@ -254,20 +257,43 @@ ushort take_trash(HASH *hash, lli frequence[])
         conversor *= 8;
 
         ushort trash_size = conversor - total_bit;
-        
+
         return trash_size;
     }
 }
 
 void create_header(int trash, int size_tree, FILE *compacted)
 {
-    unsigned char byte;
-    printf("%d", trash);
-	byte = trash << 5 | size_tree >> 8;
-	fprintf(compacted, "%c", byte);
-	byte = size_tree;
-	fprintf(compacted, "%c", byte);
+    unsigned char byte = 0;
+    printf("%d\n", trash);
+    byte = trash << 5 | size_tree >> 8;
+    printf("%d", byte);
+    //fprintf(compacted, "%c", byte);
+    fputc(byte, compacted);
+    byte = size_tree;
+    //fprintf(compacted, "%c", byte);
+    fputc(byte, compacted);
 }
+
+/*lli import_binary(FILE *file, FILE *compacted, HASH *hash, uchar binary, uchar aux1, int size_new_binary)
+{
+   while(fscanf(file, "%c", &binary) != EOF)
+   {
+       if (size_new_binary < 0)
+       {
+           fputc(aux1, compacted);
+           import_binary(file, compacted, hash, binary, 0, 7);
+       }
+       
+       uchar aux2 = hash -> array[binary] -> code;
+       aux2 <<= size_new_binary - hash -> array[binary] -> size;
+
+       size_new_binary -= hash -> array[binary] -> size;
+
+       aux1 = aux1 | aux2;
+   }
+   
+}*/
 
 int main()
 {
@@ -296,17 +322,23 @@ int main()
     ushort trash_size = take_trash(hash, frequence);
     printf("%d\n", trash_size);
 
-    ushort  size_tree = tree_size(tree);
+    ushort size_tree = tree_size(tree);
     printf("%d\n\n", size_tree);
 
-    FILE * compacted = fopen("compressed.txt.huff", "wb");
+    FILE *compacted = fopen("compressed.txt.huff", "wb");
 
     create_header(trash_size, size_tree, compacted);
 
     print_pre_order(tree, compacted);
 
-    fclose(compacted);
-    fclose(file);
+    rewind(file);
+
+    //import_binary(file, compacted, hash, 0, 0, 7);
+    int inteiro = hash->array[65]->code;
+    printf("%d",inteiro);
+
+    //fclose(compacted);
+    //fclose(file);
 
     return 0;
 }
