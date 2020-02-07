@@ -5,11 +5,11 @@ Seminário: *Segment Tree*
 
 C/P: *FP com Heap vs. FP sem Heap*
 
-Exigencias:
+*Exigências:*
 - VsCODE +  CUnit
 - Ponteiro *void
 
-Email:
+*Email:*
 - jkcm@ic.ufal.br (Juliana Karla de Carvalho Melo)
 
 - eaaa@ic.ufal.br (Ester Albuquerque Aleixo de Andrade)
@@ -20,7 +20,7 @@ Email:
 
 - acng@ic.ufal.br (Ana Carolina Nesso Guedes)
 
-Links importantes:
+*Links importantes:*
 
 Git do projeto: https://github.com/users/Esterdelima/projects/1
 
