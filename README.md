@@ -9,9 +9,9 @@ Exigencias:
 - Ponteiro *void
 
 Email:
-- jkcm@ic.ufal.br
+- jkcm@ic.ufal.br (Juliana Karla de Carvalho Melo)
 
-- eaaa@ic.ufal.br
+- eaaa@ic.ufal.br (Ester Albuquerque Aleixo de Andrade)
 
 - elpa@ic.ufal.br (Ester de Lima Pontes Andrade)
 
