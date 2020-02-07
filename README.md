@@ -6,7 +6,7 @@ Seminário: *Segment Tree*
 C/P: *FP com Heap vs. FP sem Heap*
 
 **Exigências:**
-- VsCODE +  CUnit
+- VSCode +  CUnit
 - Ponteiro *void
 
 **Email:**
