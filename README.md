@@ -2,6 +2,7 @@
 Data da apresentação: *10/02/2020*
 
 Seminário: *Segment Tree*
+
 C/P: *FP com Heap vs. FP sem Heap*
 
 Exigencias:
