@@ -4,9 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 #define uchar unsigned char
-#define ushort int
+#define ushort unsigned short
 #define lli long long int
 
 typedef struct node NODE;
@@ -17,31 +18,35 @@ typedef struct priority_queue PRIORITY_QUEUE;
 
 // NO DE FILA E DE ARVORE
 
-struct node {
+struct node 
+{
     lli priority;
-    uchar caracter;
-    NODE* next;
-    NODE* left;
-    NODE* right;
+    void* caracter; // uchar
+    NODE* next; 
+    NODE* left; 
+    NODE* right; 
 };
 
 // FILA DE PRIORIDADE
 
-struct priority_queue {
+struct priority_queue 
+{
     lli size;
-    NODE* head;
+    NODE* head; 
 };
 
 // NO DE HASH
 
-struct element {
-    int size;
-    ushort code;
+struct element 
+{
+    int size; 
+    void* code; // ushort
 };
 
 // HASH
 
-struct hash_table {
+struct hash_table 
+{
     ELEMENT* array[256];
 };
 
