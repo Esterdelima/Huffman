@@ -26,24 +26,20 @@ NODE* construct_tree(uchar str[], int *i)
 
 // FUNCAO DE DESCOMPRESSAO
 
-void descompact(FILE *compacted_file, char output_filename[256], NODE *tree, lli cont_bytes, ushort trash, ushort size_tree) 
+void descompact(FILE *compacted_file, char output_filename[256], NODE *tree, lli quant_bytes, ushort trash) 
 {
     // DESCOMPACTAR
-    fseek(compacted_file, 2 + size_tree, SEEK_SET); // função de percorrer o arquivo a partir de um ponto especifico.
-
+    NODE* current = tree; 
     uchar byte = 0;
     int limit = 0;
-    NODE* current = tree; 
-
-    printf("%s\n", output_filename);
 
     FILE* descompacted_file = fopen(output_filename, "wb");
 
-    for (cont_bytes; cont_bytes > 0; cont_bytes--) 
+    for (quant_bytes; quant_bytes > 0; quant_bytes--) 
     { // conta os bytes percorridos.
         fscanf(compacted_file, "%c", &byte);
         
-        if (cont_bytes == 1) 
+        if (quant_bytes == 1) 
         { // ultimo byte com o lixo (so verificamos esse byte ate o seu lixo).
             limit = trash; 
         }
@@ -60,7 +56,7 @@ void descompact(FILE *compacted_file, char output_filename[256], NODE *tree, lli
             }
             if (is_leaf(current)) 
             { // folha, hora de printar o caracter no novo arquivo :D.
-                fprintf(descompacted_file, "%c", *(uchar*) (current -> caracter));
+                fputc(*(uchar*) (current -> caracter), descompacted_file);
                 current = tree; // ponteiro pro inicio da arvore.
             }
         }
@@ -77,6 +73,7 @@ int decompress()
     scanf("%s", input_filename);
     int size = strlen(input_filename) - 5; // 5 pelos 5 caracteres do ".huff"
     int i;
+
     for(i = 0; i < size; i++) {
         output_filename[i] = input_filename[i];
     }
@@ -99,9 +96,8 @@ int decompress()
 
     // PEGAR O LIXO E O TAMANHO DA ARVORE
 
-    ushort size_tree = 0;       // zera os 16 bits com o tamanho da arvore.
     ushort trash = byte_1 >> 5; // elimina os 5 bits do tamanho da arvore.
-    size_tree = byte_1 << 11;   // anda 8 bits pra passar pro byte + a esquerda, +3 pra sumir c os 3 bits de lixo.
+    ushort size_tree = byte_1 << 11;   // anda 8 bits pra passar pro byte + a esquerda, +3 pra sumir c os 3 bits de lixo.
     size_tree >>= 3;            // os 3 bits de lixo voltam zerados.
     size_tree |= byte_2;        // recebe o restante do tamanho da arvore no 2 byte.
 
@@ -119,15 +115,17 @@ int decompress()
 
     // CONTAR OS BYTES DO ARQUIVO
 
-    lli cont_bytes = 0;
+    lli quant_bytes = 0;
     uchar byte; // so pra ler e contar os bytes msm
 
     while (fscanf(compacted_file, "%c", &byte) != EOF) 
     {
-        cont_bytes++;
+        quant_bytes++;
     }
 
-    descompact(compacted_file, output_filename, tree, cont_bytes, trash, size_tree);
+    fseek(compacted_file, 2 + size_tree, SEEK_SET); // função de percorrer o arquivo a partir de um ponto especifico.
+
+    descompact(compacted_file, output_filename, tree, quant_bytes, trash);
     fclose(compacted_file);
 
     return 1;

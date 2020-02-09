@@ -25,7 +25,7 @@ PRIORITY_QUEUE* create_priority_queue()
     return queue;
 };
 
-void fill_priority_queue(lli frequence[], PRIORITY_QUEUE* queue)
+void fill_priority_queue(lli frequence[256], PRIORITY_QUEUE* queue)
 {
     for (int i = 0; i < 256; i++)
     {
@@ -193,38 +193,31 @@ bool is_bit_i_set(ushort byte, int i)
 
 // LIXO, TAMANHO DA ÁRVORE E CABEÇALHO
 
-uchar get_trash(HASH* hash, lli* frequence) 
+uchar get_trash(HASH* hash, lli frequence[256]) 
 {
-    lli sum = 0; 
+    lli bits_amount = 0; 
 
     for (int i = 0; i < 256; i++)
     {
-        if (hash -> array[i] != NULL)
+        if (frequence[i] > 0)
         {
-            sum += hash -> array[i] -> size * frequence[i];
+            bits_amount += hash -> array[i] -> size * frequence[i];
         }
     }
     uchar trash = 0; // tamanho do lixo
-    lli bits = 0; // quantia de bits usados
-    lli bytes = sum / 8; // quantia de bytes alocados
-
-    if (sum % 8 != 0)
+    
+    if (bits_amount % 8 != 0)
     {
-        bytes++;
-        bits = bytes * 8; // quantidade de bits alocados(NAO É O TOTAL DE BITS USADOS TA!)
-        trash = bits - sum;
+        trash = 8 - (bits_amount % 8);
     }
 }
 
-ushort create_file_header(HASH* hash, lli frequence[], NODE* tree, uchar trash, ushort size_tree) 
+ushort create_file_header(HASH* hash, NODE* tree, uchar trash, ushort size_tree) 
 {
     ushort header = 0; // zera os 16 bits (2 bytes): 00000000 00000000
     header |= trash;  // agora ficou assim: 000000 00000101 (ultimo byte eh o lixo em binario)
     header <<= 13;   //  para trazer o lixo pras 3 primeiras posicoes do primeiro byte: 10100000 00000000
     header = header | size_tree;  // inserir o restante da arvore (11 exemplo) nos 2 bits: 1010 0000 0000 1011 (header pronta!)            
-
-    // printf("trash %u\n", trash);
-    // printf("header %u\n", header);
 
     return header;
 }
@@ -240,7 +233,7 @@ void write_header(ushort header, FILE* compact_file)
 
 // COMPACTAÇÃO
 
-void compact_file(FILE* compacted_file, char input_filename[256], HASH* hash, uchar trash_size)
+void compact_file(FILE* compacted_file, char input_filename[256], HASH* hash, uchar trash)
 {
     FILE* read_file = fopen(input_filename, "rb"); // abro e leio o arquivo.
     int size;
@@ -278,7 +271,7 @@ void compact_file(FILE* compacted_file, char input_filename[256], HASH* hash, uc
         }
     }
     compress_byte >>= 1;          // ajusta o ultimo bit dp ultimo byte, pois ele contem o ultimo bit errado.
-    compress_byte <<= trash_size; //  shiftei o tamanho do lixo no ultimo byte do arquivo codificado.
+    compress_byte <<= trash; //  shiftei o tamanho do lixo no ultimo byte do arquivo codificado.
 
     fprintf(compacted_file, "%c", compress_byte); // printa o ultimo byte no arquivo.
     fclose(read_file);
@@ -320,7 +313,7 @@ int compress()
     uchar trash = get_trash(hash, frequence); // trash so ocupa 3 bits, por isso so alocamos 1 byte para guardar o lixo.
     ushort size_tree = get_size_tree(tree);
 
-    ushort header = create_file_header(hash, frequence, tree, trash, size_tree);
+    ushort header = create_file_header(hash, tree, trash, size_tree);
     write_header(header, compacted_file); // escrever o cabeçalho no arquivo compactado.
                     
     get_pre_order_tree(tree, compacted_file);

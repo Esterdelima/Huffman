@@ -14,7 +14,7 @@ bool is_leaf(NODE* current);
 
 NODE* construct_tree(uchar *str, int *i); 
 
-void descompact(FILE *compacted_file, char output_filename[256], NODE *tree, lli cont_bytes, ushort trash, ushort size_tree);
+void descompact(FILE *compacted_file, char output_filename[256], NODE *tree, lli quant_bytes, ushort trash);
 
 int decompress();
 
